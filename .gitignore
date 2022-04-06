@@ -1,6 +1,4 @@
 
 *.csv
 *.png
-data_base/*.pkl
-
-*.pkl
+data_base/*
