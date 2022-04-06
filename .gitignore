@@ -1,4 +1,5 @@
 
 *.csv
-*.pkl
 *.png
+data_base/*.pkl
+
