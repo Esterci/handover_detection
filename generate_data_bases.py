@@ -29,6 +29,8 @@ data = data.T
 
 # Number of events
 #total = 500000
+from utils import ProgBar
+
 
 # Percentage of background samples on the testing phase
 #background_percent = 0.99
@@ -38,24 +40,18 @@ test_size = 0.3
 
 # Number of iterations
 
-n_it = 33
+n_it = 11
 
+bar = ProgBar(n_it,"Creating sub-sets..")
 
 for it in range(n_it):
 
     train_data, test_data, train_labels, test_labels = train_test_split(
-    data, labels, test_size=test_size, random_state=2021, stratify=labels )
+    data, labels, test_size=test_size, random_state=it, stratify=labels )
 
     train_labels = train_labels.astype(bool)
     #creating normal and fraud datasets
     normal_train_data = train_data[~train_labels]
-
-    print('\n      ==== Pre-processing Complete ====\n')
-    print(".Train data shape: {}".format(train_data.shape))
-    print(".Test data shape: {}".format(test_data.shape))
-
-    print('=*='*17 )
-
     Output = {'train_data'  : train_data,
               'test_data'   : test_data,
               'test_labels' : test_labels}
@@ -66,3 +62,6 @@ for it in range(n_it):
     with open(struct_name, 'wb') as f:
         pk.dump(Output, f)
 
+    bar.update()
+
+print('\n')

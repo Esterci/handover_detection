@@ -1,6 +1,7 @@
 import os
 import glob
 import numpy as np
+from utils import ProgBar
 
 # define the paths into the container
 data_path  = '../data_base/*'
@@ -8,32 +9,40 @@ data_path  = '../data_base/*'
 # Defining hyper-parameters range
 
 min_batch_size = 100
-
 max_batch_size = 500
 
-min_hidden_dim = 8
+min_hidden_dim = 20
+max_hidden_dim = 200
 
-max_hidden_dim = 10
+min_time_step = 3
+max_time_step = 10
 
 # Parameters in study
 
-batch_size_list = list(np.linspace(max_batch_size,min_batch_size,num=10,dtype=int))
-encoding_dim_list = list(np.linspace(min_hidden_dim,max_hidden_dim,num=3,dtype=int))
+batch_size_list = list(np.linspace(max_batch_size,min_batch_size,num=5,dtype=int))
+encoding_dim_list = list(np.linspace(min_hidden_dim,max_hidden_dim,num=5,dtype=int))
+time_step_list = list(np.linspace(min_time_step,max_time_step,num=5,dtype=int))
 
 
 # create a list of config files
 file_list  = glob.glob(data_path)
 
-for file in file_list:
-    for batch_size in batch_size_list:
-        for encoding_dim in encoding_dim_list:
+bar = ProgBar(
+    int(len(file_list)*len(time_step_list)*len(batch_size_list)*len(encoding_dim_list)),
+    "\nExecuting training and testing..."
+)
 
-            m_command = """python3 autoencoder.py -b {BACH} \\
-            -e {EDIM} \\
-            -f {FILE}""".format(BACH=batch_size, 
+for file in file_list:
+    for time_step in time_step_list:
+        for batch_size in batch_size_list:
+            for encoding_dim in encoding_dim_list:
+
+                m_command = """python3 autoencoder.py -b {BACH} -e {EDIM} -t {TIME} -f {FILE}""".format(BACH=batch_size, 
                                     EDIM=encoding_dim,
+                                    TIME=time_step,
                                     FILE=file)
 
-            print(m_command)
-            # execute the tuning
-            os.system(m_command)
+                # execute the tuning
+                os.system(m_command)
+
+                bar.update()
