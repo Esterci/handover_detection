@@ -3,8 +3,9 @@ import glob
 import numpy as np
 from utils import ProgBar
 
+
 # define the paths into the container
-data_path  = '../data_base/*'
+data_path = "../data_base/*"
 
 # Defining hyper-parameters range
 
@@ -19,17 +20,22 @@ max_time_step = 10
 
 # Parameters in study
 
-batch_size_list = list(np.linspace(max_batch_size,min_batch_size,num=5,dtype=int))
-encoding_dim_list = list(np.linspace(min_hidden_dim,max_hidden_dim,num=5,dtype=int))
-time_step_list = list(np.linspace(min_time_step,max_time_step,num=5,dtype=int))
+batch_size_list = list(np.linspace(max_batch_size, min_batch_size, num=1, dtype=int))
+encoding_dim_list = list(np.linspace(min_hidden_dim, max_hidden_dim, num=1, dtype=int))
+time_step_list = list(np.linspace(min_time_step, max_time_step, num=1, dtype=int))
 
 
 # create a list of config files
-file_list  = glob.glob(data_path)
+file_list = glob.glob(data_path)
 
 bar = ProgBar(
-    int(len(file_list)*len(time_step_list)*len(batch_size_list)*len(encoding_dim_list)),
-    "\nExecuting training and testing..."
+    int(
+        len(file_list)
+        * len(time_step_list)
+        * len(batch_size_list)
+        * len(encoding_dim_list)
+    ),
+    "\nExecuting training and testing...",
 )
 
 for file in file_list:
@@ -37,12 +43,15 @@ for file in file_list:
         for batch_size in batch_size_list:
             for encoding_dim in encoding_dim_list:
 
-                m_command = """python3 autoencoder.py -b {BACH} -e {EDIM} -t {TIME} -f {FILE}""".format(BACH=batch_size, 
-                                    EDIM=encoding_dim,
-                                    TIME=time_step,
-                                    FILE=file)
+                it = file.split("__")[4]
+
+                m_command = """python3 autoencoder.py -b {BACH} -e {EDIM} -t {TIME} -it {IT} -f {FILE}""".format(
+                    BACH=batch_size, EDIM=encoding_dim, TIME=time_step, IT=it, FILE=file
+                )
 
                 # execute the tuning
                 os.system(m_command)
 
                 bar.update()
+
+print('\n')
