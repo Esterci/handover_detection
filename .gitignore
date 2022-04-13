@@ -1,2 +1,6 @@
 
 *.csv
+*.png
+data_base/*
+LSTM_hyperparameters_study/Results/*
+*.h5
