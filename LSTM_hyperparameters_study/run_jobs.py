@@ -54,4 +54,4 @@ for file in file_list:
 
                 bar.update()
 
-print('\n')
+print("\n")

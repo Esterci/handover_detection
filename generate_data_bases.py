@@ -15,7 +15,7 @@ data = raw_data[:, 0:-1]
 
 data = data.T
 
-sc=MinMaxScaler(feature_range=(0,1))
+sc = MinMaxScaler(feature_range=(0, 1))
 
 data = sc.fit_transform(data)
 
@@ -28,12 +28,12 @@ data = data.T
 ##########################################################
 
 # Number of events
-#total = 500000
+# total = 500000
 from utils import ProgBar
 
 
 # Percentage of background samples on the testing phase
-#background_percent = 0.99
+# background_percent = 0.99
 
 # Percentage of samples on the training phase
 test_size = 0.3
@@ -42,26 +42,30 @@ test_size = 0.3
 
 n_it = 11
 
-bar = ProgBar(n_it,"Creating sub-sets..")
+bar = ProgBar(n_it, "Creating sub-sets..")
 
 for it in range(n_it):
 
     train_data, test_data, train_labels, test_labels = train_test_split(
-    data, labels, test_size=test_size, random_state=it, stratify=labels )
+        data, labels, test_size=test_size, random_state=it, stratify=labels
+    )
 
     train_labels = train_labels.astype(bool)
-    #creating normal and fraud datasets
+    # creating normal and fraud datasets
     normal_train_data = train_data[~train_labels]
-    Output = {'train_data'  : train_data,
-              'test_data'   : test_data,
-              'test_labels' : test_labels}
+    Output = {
+        "train_data": train_data,
+        "test_data": test_data,
+        "test_labels": test_labels,
+    }
 
-    struct_name = ('data_base/data__test_size__' + str(test_size) +
-                   '__n_it__' + str(it) + '__.pkl')
-    
-    with open(struct_name, 'wb') as f:
+    struct_name = (
+        "data_base/data__test_size__" + str(test_size) + "__n_it__" + str(it) + "__.pkl"
+    )
+
+    with open(struct_name, "wb") as f:
         pk.dump(Output, f)
 
     bar.update()
 
-print('\n')
+print("\n")

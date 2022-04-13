@@ -1,9 +1,8 @@
-
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 
-tf.get_logger().setLevel('INFO')
+tf.get_logger().setLevel("INFO")
 tf.autograph.set_verbosity(0)
 
 from tensorflow.python.framework.ops import disable_eager_execution
@@ -11,23 +10,24 @@ from tensorflow.python.framework.ops import disable_eager_execution
 disable_eager_execution()
 import os
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 import argparse
 import glob
 import pickle as pk
 
 import matplotlib.pyplot as plt
 from tensorflow.keras import backend as K
-from tensorflow.keras.layers import (LSTM, Dense, Dropout, RepeatVector,
-                                     TimeDistributed)
+from tensorflow.keras.layers import LSTM, Dense, Dropout, RepeatVector, TimeDistributed
 from tensorflow.keras.optimizers import Adam
 
 
 def d3_d2(mat):
     import numpy as np
+
     mat = np.array(mat)
     n, m, l = mat.shape
     return mat.reshape(n, m * l)
+
 
 def argsDictionary(args):
 
@@ -36,13 +36,14 @@ def argsDictionary(args):
     structure_name = []
 
     for var in var_dict:
-        if not var == 'file':
-            hp_n_values = str(var) + '-'*2 + str(var_dict[var])
+        if not var == "file":
+            hp_n_values = str(var) + "-" * 2 + str(var_dict[var])
             structure_name.append(hp_n_values)
 
-    structure_name = ('_'*2).join(structure_name)
+    structure_name = ("_" * 2).join(structure_name)
 
     return var_dict, structure_name
+
 
 # defining hyper-parameters constructor
 
@@ -114,12 +115,12 @@ results_list = glob.glob("Results/*")
 results_list = [result.split("/")[-1].split(".")[0] for result in results_list]
 
 if not (struct_name) in results_list:
-    with open(args['file'], "rb") as f:
+    with open(args["file"], "rb") as f:
         data_dict = pk.load(f)
 
-    train_data = data_dict["train_data"][:, - args['time_step']:]
+    train_data = data_dict["train_data"][:, -args["time_step"] :]
     test_labels = data_dict["test_labels"]
-    test_data = data_dict["test_data"][:, - args['time_step']:]
+    test_data = data_dict["test_data"][:, -args["time_step"] :]
 
     train_data = train_data.reshape(train_data.shape[0], train_data.shape[1], 1)
 
@@ -129,7 +130,7 @@ if not (struct_name) in results_list:
 
     nb_epoch = 4
     n_features = 1
-    hidden_dim_1 = int(args['encoding_dim'] / 2)  #
+    hidden_dim_1 = int(args["encoding_dim"] / 2)  #
     learning_rate = 0.001
 
     ###### Creates NN structure #####
@@ -140,18 +141,20 @@ if not (struct_name) in results_list:
     autoencoder = tf.keras.Sequential()
     autoencoder.add(
         LSTM(
-            args['encoding_dim'],
+            args["encoding_dim"],
             activation="sigmoid",
-            input_shape=(args['time_step'], n_features),
+            input_shape=(args["time_step"], n_features),
             return_sequences=True,
         )
     )
     autoencoder.add(Dropout(0.2))
     autoencoder.add(LSTM(hidden_dim_1, activation="sigmoid", return_sequences=False))
-    autoencoder.add(RepeatVector(args['time_step']))
+    autoencoder.add(RepeatVector(args["time_step"]))
     autoencoder.add(LSTM(hidden_dim_1, activation="sigmoid", return_sequences=True))
     autoencoder.add(Dropout(0.2))
-    autoencoder.add(LSTM(args['encoding_dim'], activation="sigmoid", return_sequences=True))
+    autoencoder.add(
+        LSTM(args["encoding_dim"], activation="sigmoid", return_sequences=True)
+    )
     autoencoder.add(TimeDistributed(Dense(n_features)))
     autoencoder.compile(optimizer="adam", loss="mse")
 
@@ -187,7 +190,7 @@ if not (struct_name) in results_list:
         train_data,
         train_data,
         epochs=nb_epoch,
-        batch_size=args['batch_size'],
+        batch_size=args["batch_size"],
         shuffle=True,
         validation_data=(test_data, test_data),
         verbose=0,

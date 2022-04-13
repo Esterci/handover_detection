@@ -1,4 +1,3 @@
-
 import numpy as np
 import pickle
 import glob
@@ -9,9 +8,9 @@ import time
 file_list = glob.glob("data_divisions/*")
 file_list.sort()
 
-gra_list = [2.5,2.6,2.7]
+gra_list = [2.5, 2.6, 2.7]
 
-for ii in range(int(len(file_list)/33)):
+for ii in range(int(len(file_list) / 33)):
 
     for gra in gra_list:
 
@@ -23,7 +22,7 @@ for ii in range(int(len(file_list)/33)):
 
         for j in range(33):
 
-            loc = ii*33 + j
+            loc = ii * 33 + j
 
             file = file_list[int(loc)]
 
@@ -31,21 +30,19 @@ for ii in range(int(len(file_list)/33)):
 
             n_time_series = len(data)
 
-            print("\n\nNumber of time series: {}; Granularity: {}; Iteration {};\n".format(n_time_series,
-                                                                                           gra,
-                                                                                           (j+1)))
+            print(
+                "\n\nNumber of time series: {}; Granularity: {}; Iteration {};\n".format(
+                    n_time_series, gra, (j + 1)
+                )
+            )
 
-            aux = (file.split('__'))
+            aux = file.split("__")
 
-            target_name = "targets/target__" + '__'.join(aux[1:])
+            target_name = "targets/target__" + "__".join(aux[1:])
 
             target = pickle.load(open(target_name, "rb"))
 
-            Input = {
-                'StaticData': data,
-                'GridSize': gra,
-                'DistanceType': 'euclidean'
-            }
+            Input = {"StaticData": data, "GridSize": gra, "DistanceType": "euclidean"}
 
             # initiate timer
             start = time.time()
@@ -59,7 +56,7 @@ for ii in range(int(len(file_list)/33)):
             # append enlapse time
             enlapsed_time.append(end - start)
 
-            SODA_label = output['IDX']
+            SODA_label = output["IDX"]
 
             n_groups = max(SODA_label)
 
@@ -77,17 +74,17 @@ for ii in range(int(len(file_list)/33)):
                 else:
                     percent[group, 1] += 1
 
-            percent[:, 0] = percent[:, 0]/n_samples
+            percent[:, 0] = percent[:, 0] / n_samples
 
-            percent[:, 1] = percent[:, 1]/n_samples
+            percent[:, 1] = percent[:, 1] / n_samples
 
-            percent = percent*100
+            percent = percent * 100
 
             for p in percent:
                 if p[0] >= 50:
                     n_good_groups[j] += 1
                     good_percent_list.append(p[0])
-                
+
                 else:
                     n_bad_groups[j] += 1
                     bad_percent_list.append(p[1])
@@ -112,32 +109,37 @@ for ii in range(int(len(file_list)/33)):
         numero de grupos com ferramentas boas: {:.4f} +/- {:.4f}\n
         numero de grupos com ferramentas ruins: {:.4f} +/- {:.4f}\n
         porcentagem média de ferramentas boas: {:.4f} +/- {:.4f}%\n
-        porcentagem média de ferramentas ruins: {:.4f} +/- {:.4f}%\n""".format(n_time_series,
-                                                                               mean_enlapsed_time,
-                                                                               std_enlapsed_time,
-                                                                               mean_n_good_groups,
-                                                                               std_n_good_groups,
-                                                                               mean_n_bad_groups,
-                                                                               std_n_bad_groups,
-                                                                               good_mean,
-                                                                               good_std,
-                                                                               bad_mean,
-                                                                               bad_std)
+        porcentagem média de ferramentas ruins: {:.4f} +/- {:.4f}%\n""".format(
+            n_time_series,
+            mean_enlapsed_time,
+            std_enlapsed_time,
+            mean_n_good_groups,
+            std_n_good_groups,
+            mean_n_bad_groups,
+            std_n_bad_groups,
+            good_mean,
+            good_std,
+            bad_mean,
+            bad_std,
+        )
 
         print(output_text)
 
         output_dict = {
-            'n_time_series':n_time_series,
-            'mean_enlapsed_time':mean_enlapsed_time,
-            'std_enlapsed_time':std_enlapsed_time,
-            'mean_n_good_groups':mean_n_good_groups,
-            'std_n_good_groups':std_n_good_groups,
-            'mean_n_bad_groups':mean_n_bad_groups,
-            'std_n_bad_groups':std_n_bad_groups,
-            'good_mean':good_mean,
-            'good_std':good_std,
-            'bad_mean':bad_mean,
-            'bad_std':bad_std
+            "n_time_series": n_time_series,
+            "mean_enlapsed_time": mean_enlapsed_time,
+            "std_enlapsed_time": std_enlapsed_time,
+            "mean_n_good_groups": mean_n_good_groups,
+            "std_n_good_groups": std_n_good_groups,
+            "mean_n_bad_groups": mean_n_bad_groups,
+            "std_n_bad_groups": std_n_bad_groups,
+            "good_mean": good_mean,
+            "good_std": good_std,
+            "bad_mean": bad_mean,
+            "bad_std": bad_std,
         }
 
-        pickle.dump(output_dict,open("outputs/output__{}__{}__.pkl".format(n_time_series,gra), "wb"))
+        pickle.dump(
+            output_dict,
+            open("outputs/output__{}__{}__.pkl".format(n_time_series, gra), "wb"),
+        )
