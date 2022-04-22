@@ -267,9 +267,9 @@ class db_reduction:
 
 
 class ResultFormarter:
-    def __init__(self, study_folder):
+    def __init__(self, study_folder="Results/*"):
 
-        self.results_files = glob.glob(study_folder + "Results/*")
+        self.results_files = glob.glob(study_folder)
 
         self.results_files.sort()
 
@@ -279,33 +279,39 @@ class ResultFormarter:
 
         for file in self.results_files:
 
-            batch_size = file.split("__")[2]
-            encoding_dim = file.split("__")[4]
+            batch_size = file.split("__")[0].split('--')[1]
 
             results_dict[batch_size] = {}
 
         for file in self.results_files:
 
-            batch_size = file.split("__")[2]
-            encoding_dim = file.split("__")[4]
+            batch_size = file.split("__")[0].split('--')[1]
+            encoding_dim = file.split("__")[1].split('--')[1]
 
             results_dict[batch_size][encoding_dim] = {}
+
+        for file in self.results_files:
+
+            batch_size = file.split("__")[0].split('--')[1]
+            encoding_dim = file.split("__")[1].split('--')[1]
+            time_step = file.split("__")[2].split('--')[1]
+
+            results_dict[batch_size][encoding_dim][time_step] = {}
 
         self.results_dict = results_dict
 
     def load_results(self):
         for file in self.results_files:
 
-            batch_size = file.split("__")[2]
-            encoding_dim = file.split("__")[4]
-            it = file.split("__")[6]
+            batch_size = file.split("__")[0].split('--')[1]
+            encoding_dim = file.split("__")[1].split('--')[1]
+            time_step = file.split("__")[2].split('--')[1]
+            it = file.split("__")[3].split('--')[1].split('.')[0]
 
             with open(file, "rb") as f:
                 results_data = pickle.load(f)
 
-            self.results_dict[batch_size][encoding_dim][it] = {
-                "results_data": results_data
-            }
+            self.results_dict[batch_size][encoding_dim][time_step][it] = results_data
 
     def get_results(self):
 
@@ -315,18 +321,16 @@ class ResultFormarter:
 
         for batch_size in self.results_dict:
             for encoding_dim in self.results_dict[batch_size]:
-                for i, it in enumerate(self.results_dict[batch_size][encoding_dim]):
-                    if i == 0:
-                        data = self.results_dict[batch_size][encoding_dim][it][
-                            "results_data"
-                        ]
+                for time_step in self.results_dict[batch_size][encoding_dim]:
+                    for i, it in enumerate(self.results_dict[batch_size][encoding_dim][time_step]):
 
-                    else:
-                        new_data = self.results_dict[batch_size][encoding_dim][it][
-                            "results_data"
-                        ]
-                        data = np.vstack((data, new_data))
+                        if i == 0:
+                                data = self.results_dict[batch_size][encoding_dim][time_step][it]
 
-                self.results_dict[batch_size][encoding_dim] = data
+                        else:
+                            new_data = self.results_dict[batch_size][encoding_dim][time_step][it]
+                            data = np.vstack((data, new_data))
+
+                    self.results_dict[batch_size][encoding_dim][time_step] = data
 
         return self.results_dict

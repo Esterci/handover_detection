@@ -5,7 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 import pickle as pk
 
 
-dataset = pd.read_csv("classification_base.csv")
+dataset = pd.read_csv("data_base/classification_base.csv")
 
 raw_data = dataset.values
 # The last element contains if the transaction is normal which is represented by a 0 and if fraud then 1
@@ -60,7 +60,7 @@ for it in range(n_it):
     }
 
     struct_name = (
-        "data_base/data__test_size__" + str(test_size) + "__n_it__" + str(it) + "__.pkl"
+        "data_divisions/data__test_size__" + str(test_size) + "__n_it__" + str(it) + "__.pkl"
     )
 
     with open(struct_name, "wb") as f:
