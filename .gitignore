@@ -6,3 +6,16 @@ LSTM_hyperparameters_study/Results/*
 data_divisions/*
 *.h5
 *.pkl
+data_divisions/data__test_size__0.3__n_it__6__.pkl
+data_divisions/data__test_size__0.3__n_it__0__.pkl
+data_divisions/data__test_size__0.3__n_it__0__.pkl
+data_divisions/data__test_size__0.3__n_it__10__.pkl
+data_divisions/data__test_size__0.3__n_it__1__.pkl
+data_divisions/data__test_size__0.3__n_it__2__.pkl
+data_divisions/data__test_size__0.3__n_it__3__.pkl
+data_divisions/data__test_size__0.3__n_it__4__.pkl
+data_divisions/data__test_size__0.3__n_it__5__.pkl
+data_divisions/data__test_size__0.3__n_it__6__.pkl
+data_divisions/data__test_size__0.3__n_it__7__.pkl
+data_divisions/data__test_size__0.3__n_it__8__.pkl
+data_divisions/data__test_size__0.3__n_it__9__.pkl
