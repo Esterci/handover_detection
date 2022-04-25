@@ -15,14 +15,14 @@ max_batch_size = 500
 min_hidden_dim = 20
 max_hidden_dim = 200
 
-min_time_step = 3
-max_time_step = 10
+min_time_step = 10
+max_time_step = 50
 
 # Parameters in study
 
 batch_size_list = list(np.linspace(max_batch_size, min_batch_size, num=1, dtype=int))
 encoding_dim_list = list(np.linspace(min_hidden_dim, max_hidden_dim, num=2, dtype=int))
-time_step_list = list(np.linspace(min_time_step, max_time_step, num=3, dtype=int))
+time_step_list = list(np.linspace(min_time_step, max_time_step, num=12, dtype=int))
 
 
 # create a list of config files
