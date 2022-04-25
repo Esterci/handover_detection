@@ -5,7 +5,11 @@ from sklearn.preprocessing import MinMaxScaler
 import pickle as pk
 
 
-dataset = pd.read_csv("data_base/classification_base.csv")
+print("\nLoading data-set...")
+
+dataset = pd.read_csv("data_base/concatbases.csv")
+
+print("\nLock and loaded!\n")
 
 raw_data = dataset.values
 # The last element contains if the transaction is normal which is represented by a 0 and if fraud then 1
