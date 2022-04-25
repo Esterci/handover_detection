@@ -3,5 +3,6 @@
 *.png
 data_base/*
 LSTM_hyperparameters_study/Results/*
+data_divisions/*
 *.h5
 *.pkl
